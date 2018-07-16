@@ -1,0 +1,101 @@
+(de curses @ (pass native "libncursesw.so"))
+
+(de ncursesBits (M S)
+   (>> (- (+ S 8)) M) )
+
+(setq colorCyan 6)
+(setq colorBlack 0)
+(setq aColor (ncursesBits (- (>> 1 -8) 1) 0))
+(setq keyDown 258)
+(setq keyUp 259)
+(setq keyLeft 260)
+(setq keyRight 261)
+
+(de keyF (X) (+ X 264))
+
+(class +WindowBorder)
+# ls rs ts bs
+# tl tr bl br
+(dm T (LS RS TS BS TL TR BL BR)
+   (=: ls LS)
+   (=: rs RS)
+   (=: ts TS)
+   (=: bs BS)
+   (=: tl TL)
+   (=: tr TR)
+   (=: bl BL)
+   (=: br BR) )
+
+(class +Window)
+# startx starty height width border
+(dm T (StartX StartY Width Height Border)
+   (=: startx StartX)
+   (=: starty StartY)
+   (=: width Width)
+   (=: height Height)
+   (=: border Border) )
+
+(dm printWindow> ()
+   (curses "mvprintw" NIL 25 0 "%d %d %d %d"
+      (: startx) (: starty) (: width) (: height) )
+   (curses "refresh") )
+
+(dm createBox> (F)
+   (let (x (: startx)
+         y (: starty)
+         w (: width)
+         h (: height) )
+      (if F
+         (prog
+            (curses "mvaddch" NIL y x (with (: border) (: tl)))
+            (curses "mvaddch" NIL y (+ x w) (with (: border) (: tr)))
+            (curses "mvaddch" NIL (+ y h) x (with (: border) (: bl)))
+            (curses "mvaddch" NIL (+ y h) (+ x w) (with (: border) (: br)))
+            (curses "mvhline" NIL y (+ x 1) (with (: border) (: ts)) (- w 1))
+            (curses "mvhline" NIL (+ y h) (+ x 1)
+               (with (: border) (: bs)) (- w 1) )
+            (curses "mvvline" NIL (+ y 1) x (with (: border) (: ls)) (- h 1))
+            (curses "mvvline" NIL (+ y 1) (+ x w)
+               (with (: border) (: rs)) (- h 1) ) )
+         (for J (range y (+ y h))
+            (for I (range x (+ x w))
+               (curses "mvaddch" NIL J I 32) ) ) ) )
+   (curses "refresh") )
+
+(de colorPair (n)
+   (& (ncursesBits n 0) aColor) )
+
+(local) *W *MW
+(de initWindowParams ()
+   (let (border (new '(+WindowBorder) 124 124 45 45 43 43 43 43)
+         wr (curses "getmaxy" 'I *W)
+         wc (curses "getmaxx" 'I *W))
+      (new '(+Window) (/ (- wc 10) 2) (/ (- wr 3) 2) 10 3 border) ) )
+
+(de main ()
+   (setq *W (curses "initscr" 'N))
+   (curses "start_color")
+   (curses "cbreak")
+   (curses "keypad" NIL *W 1)
+   (curses "noecho")
+   (curses "init_pair" NIL 1 colorCyan colorBlack)
+   (setq *MW (initWindowParams))
+   # (printWindow> *MW)
+   (curses "attron" NIL (colorPair 1))
+   (curses "printw" NIL "Press F1 to exit")
+   (curses "refresh")
+   (curses "attroff" NIL (colorPair 1))
+   (createBox> *MW T)
+   (let (ch (curses "getch" 'I))
+      (while (not (= ch (keyF 1)))
+         (createBox> *MW NIL)
+         (with *MW
+            (cond
+               ((= ch keyLeft) (dec (:: startx) 1))
+               ((= ch keyRight) (inc (:: startx) 1))
+               ((= ch keyUp) (dec (:: starty) 1))
+               ((= ch keyDown) (inc (:: starty) 1))))
+         (createBox> *MW T)
+         (setq ch (curses "getch" 'I)) ) )
+   (curses "endwin") )
+(====)
