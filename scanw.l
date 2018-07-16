@@ -1,0 +1,15 @@
+(de curses @ (pass native "libncursesw.so"))
+
+(local) *W *WR *WC *Msg *In
+(de main ()
+   (setq *Msg "Enter a string: ")
+   (setq *W (curses "initscr" 'N))
+   (setq *WR (curses "getmaxy" 'I *W))
+   (setq *WC (curses "getmaxx" 'I *W))
+   (curses "mvprintw" NIL (/ *WR 2) (/ (- *WC (length *Msg)) 2) "%s" *Msg)
+   (setq *In (native "@" "malloc" 'N 80))
+   (curses "wgetnstr" NIL *W *In 80)
+   (curses "mvprintw" NIL (- *WR 1) 0 "You entered: %s" *In)
+   (curses "getch" NIL)
+   (curses "endwin") )
+(====)

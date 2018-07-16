@@ -1,0 +1,25 @@
+(de curses @ (pass native "libncursesw.so"))
+
+(de keyF (X) (+ X 264))
+
+(de ncursesBits (M S)
+   (>> (- (+ S 8)) M) )
+
+(setq aBold (ncursesBits 1 13))
+
+(de main ()
+   (let (W (curses "initscr" 'N))
+      (curses "keypad" NIL W 1) )
+   (curses "raw")
+   (curses "noecho")
+   (curses "printw" NIL "Type any character to see it in bold\n")
+   (let (ch (char (curses "getch" 'C)))
+      (if (= ch (keyF 1))
+         (curses "printw" NIL "F1 Key pressed")
+         (curses "printw" NIL "The pressed key is ")
+         (curses "attron" NIL aBold)
+         (curses "printw" NIL "%c" ch)
+         (curses "attroff" NIL aBold) ) )
+   (curses "refresh")
+   (curses "getch")
+   (curses "endwin") )
