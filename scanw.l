@@ -1,6 +1,5 @@
 (de curses @ (pass native "libncursesw.so"))
 
-(local) *W *WR *WC *Msg *In
 (de main ()
    (setq *Msg "Enter a string: ")
    (setq *W (curses "initscr" 'N))
@@ -12,4 +11,3 @@
    (curses "mvprintw" NIL (- *WR 1) 0 "You entered: %s" *In)
    (curses "getch" NIL)
    (curses "endwin") )
-(====)

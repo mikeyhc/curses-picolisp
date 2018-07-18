@@ -7,7 +7,6 @@
 (setq colorCyan 6)
 (setq colorBlack 0)
 
-(local) *W
 (de main ()
    (setq *W (curses "initscr" 'N))
    (curses "start_color")

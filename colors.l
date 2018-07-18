@@ -25,7 +25,6 @@
               "%s" String )
       (curses "refresh") ) )
 
-(local) *W
 (de main ()
    (setq *W (curses "initscr" 'N))
    (when (= (curses "has_colors" 'I) 0)
@@ -40,4 +39,3 @@
    (curses "attroff" NIL (colorPair 1))
    (curses "getch")
    (curses "endwin") )
-(====)

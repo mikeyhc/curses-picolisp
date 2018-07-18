@@ -1,6 +1,5 @@
 (de curses @ (pass native "libncursesw.so"))
 
-(local) *W *WR *WC *Msg
 (de main ()
    (setq *Msg "Just a string")
    (setq *W (curses "initscr" 'N))
@@ -14,6 +13,4 @@
                               "program again") )
    (curses "refresh")
    (curses "getch")
-   (curses "endwin")
-   )
-(====)
+   (curses "endwin") )

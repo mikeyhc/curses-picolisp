@@ -1,4 +1,3 @@
-(local) curses
 (de curses @ (pass native "libncursesw.so"))
 
 (de main ()

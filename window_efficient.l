@@ -65,7 +65,6 @@
 (de colorPair (n)
    (& (ncursesBits n 0) aColor) )
 
-(local) *W *MW
 (de initWindowParams ()
    (let (border (new '(+WindowBorder) 124 124 45 45 43 43 43 43)
          wr (curses "getmaxy" 'I *W)
@@ -98,4 +97,3 @@
          (createBox> *MW T)
          (setq ch (curses "getch" 'I)) ) )
    (curses "endwin") )
-(====)

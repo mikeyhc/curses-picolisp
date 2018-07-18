@@ -21,7 +21,6 @@
    (curses "wrefresh" NIL win)
    (curses "delwin" NIL win) )
 
-(local) *W *WR *WC *MW
 (de main ()
    (setq *W (curses "initscr" 'N))
    (curses "cbreak")
@@ -54,4 +53,3 @@
                 (setq *MW (createNewwin height width starty startx)) ) )
             (setq ch (curses "getch" 'I)) ) ) )
    (curses "endwin") )
-(====)

@@ -5,7 +5,6 @@
 
 (setq aBold (ncursesBits 1 13))
 
-(local) *W *WR *WC *P
 (de newpage ()
    (curses "printw" NIL "<-Press Any Key->")
    (curses "getch")
@@ -39,4 +38,3 @@
         (curses "getch")
         (curses "endwin") )
     (out 2 (prinl "Cannot open input file")) ) )
-(====)
